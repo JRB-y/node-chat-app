@@ -6,6 +6,11 @@ const app = express();
 const server = require('http').createServer(app);
 // socket.io (listen to server)
 const io = require('socket.io').listen(server);
+// path
+const path = require('path');
+
+// Express Middleware for serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 users = [];
 connections = [];
