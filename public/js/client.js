@@ -34,14 +34,14 @@ $(function () {
     });
 
     socket.on('new-message', data => {
-        $chat.append('<div class="card"><strong>' + data.user + '</strong>' + data.msg +
+        $chat.append('<div class="card message"><strong>' + data.user + '</strong>' + data.msg +
             '</div>');
     })
 
     socket.on('get-users', (data) => {
         let html = "";
         for (i = 0; i < data.length; i++) {
-            html += '<li class="list-group-item"> ' + data[i] + ' </li>';
+            html += '<li class="list-group-item user"> ' + data[i] + ' </li>';
         }
         $users.html(html);
     })
