@@ -9,6 +9,13 @@ const io = require('socket.io').listen(server);
 // path
 const path = require('path');
 
+// mustach
+const mustache = require('mustache-express');
+//configure mustache
+app.engine('html', mustache());
+app.set('view engine', 'html');
+app.set('views', __dirname + '/public');
+
 // Express Middleware for serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -16,9 +23,14 @@ users = [];
 connections = [];
 // start server
 server.listen(process.env.PORT || 3000)
+
+
 // root get
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html')
+app.get('/about', (req, res) => {
+  console.log(123);
+  res.render('index')
+  // res.sendFile(__dirname + '/public/index.html')
+
 })
 
 io.sockets.on('connection', (socket) => {
@@ -30,14 +42,17 @@ io.sockets.on('connection', (socket) => {
   socket.on('disconnect', () => {
     connections.splice(connections.indexOf(socket), 1);
     users.splice(users.indexOf(socket.username), 1);
+    console.log('Disconnected: %s socket(s) connected', connections.length);
     updateUsernames();
   })
 
   // Send message
   socket.on('send-message', data => {
+
     io.sockets.emit('new-message', {
-      msg: data,
-      user: socket.username
+      msg: data.msg,
+      user: socket.username,
+      date: convertDate(data.date)
     });
   });
 
@@ -51,6 +66,15 @@ io.sockets.on('connection', (socket) => {
 
   function updateUsernames() {
     io.sockets.emit('get-users', users);
+  }
+
+  function convertDate(inputFormat) {
+    function pad(s) {
+      return (s < 10) ? '0' + s : s;
+    }
+    var d = new Date(inputFormat);
+    var time = [d.getHours(), d.getMinutes()].join(':');
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('/') + ' at ' + time;
   }
 
 })

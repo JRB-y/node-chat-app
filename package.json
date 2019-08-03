@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "*",
-    "express": "*"
+    "express": "*",
+    "mustache": "^3.0.1",
+    "mustache-express": "^1.2.8",
+    "socket.io": "*"
   }
 }
